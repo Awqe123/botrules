@@ -49,3 +49,4 @@ client.on("messageReactionRemove", (reaction, user) => {
         }
     }
 });
+client.login(process.env.token);
