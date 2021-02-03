@@ -8,7 +8,7 @@ client.on("messageReactionAdd", (reaction, user) => {
     let cont = reaction.message.content;
     const ussr = reaction.message.guild.members.cache.get(user.id);
     var role = reaction.message.guild.roles.cache.find(role => role.id === "806340728186732604");
-    var role2 = reaction.message.guild.roles.cache.find(role => role.id === "806340728186732604");
+    var role2 = reaction.message.guild.roles.cache.find(role => role.id === "806336844412878908");
     if(cont.includes('для получения полноценного доступа к каналам сервера гильдии')) {
         if(reaction.emoji.name === "✅"){
             ussr.roles.add(role2);
@@ -35,7 +35,7 @@ client.on("messageReactionRemove", (reaction, user) => {
     let cont = reaction.message.content;
     const ussr = reaction.message.guild.members.cache.get(user.id);
     var role = reaction.message.guild.roles.cache.find(role => role.id === "806340728186732604");
-    var role2 = reaction.message.guild.roles.cache.find(role => role.id === "806340728186732604");
+    var role2 = reaction.message.guild.roles.cache.find(role => role.id === "806336844412878908");
     if(cont.includes('для получения полноценного доступа к каналам авалона')) {
       if(reaction.emoji.name === "✅"){
         ussr.roles.remove(role);
