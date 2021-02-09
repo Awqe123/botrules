@@ -1,52 +1,69 @@
 const Discord = require('discord.js');
-const client = new Discord.Client();
-client.on('ready', () => {
+const bot = new Discord.Client();
+bot.on('ready', () => {
     console.log('[Bot2] Включен!');
 });
-client.on("messageReactionAdd", (reaction, user) => {
-    if(user == client.user) return;
-    let cont = reaction.message.content;
-    const ussr = reaction.message.guild.members.cache.get(user.id);
-    var role = reaction.message.guild.roles.cache.find(role => role.id === "806340728186732604");
-    var role2 = reaction.message.guild.roles.cache.find(role => role.id === "806336844412878908");
-    if(cont.includes('для получения полноценного доступа к каналам сервера гильдии')) {
-        if(reaction.emoji.name === "✅"){
-            ussr.roles.add(role2);
-            ussr.send('Вы согласились с правилами гильдии, вам выдан доступ к каналам гильдии!');
-        }
-        else if(reaction.emoji.name === "❌"){
-            ussr.roles.remove(role2);
-            ussr.send('Вы отказались от правил гильдии, доступ к каналам гильдии ограничен!');
-        }
-    }
-    if(cont.includes('для получения полноценного доступа к каналам авалона')) {
-      if(reaction.emoji.name === "✅"){
-        ussr.roles.add(role);
-        ussr.send('Вы согласились с правилами авалона, вам выдан доступ к каналам!');
+
+
+const events = {
+    MESSAGE_REACTION_ADD: 'messageReactionAdd',
+    MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
+};
+
+
+bot.on('raw', async (event) => {
+  try {
+      if (!events.hasOwnProperty(event.t)) return
+      const {d: data} = event
+      const user = await bot.users.fetch(data.user_id);
+      const channel = bot.channels.cache.get(data.channel_id) || (await user.createDM())
+      if (channel.messages.cache.has(data.message_id)) return
+      const message = await bot.channels.cache.get(data.channel_id).messages.fetch(data.message_id);
+      const emoji = data.emoji.name;
+      const reaction = message.reactions.cache.get(emoji);
+      bot.emit(events[event.t], reaction, user)
+  } catch (err) {
+      console.error(err)
+  }
+})
+
+
+bot.on('messageReactionAdd', (reaction, user) => {
+  if(user == bot.user) return;
+  const ussr = reaction.message.guild.members.cache.get(user.id);
+  var role = reaction.message.guild.roles.cache.find(role => role.id === "806340728186732604");
+  var role2 = reaction.message.guild.roles.cache.find(role => role.id === "806336844412878908");
+  if (reaction.message.id == "808773205652144158") {
+      if (reaction.emoji.name == "✅") {
+        user.send('Вы согласились с правилами авалона, вам выдан доступ к каналам!');
+        ussr.roles.add(role2);
       }
-      else if(reaction.emoji.name === "❌"){
-        ussr.roles.remove(role);
-        ussr.send('Вы отказались от правил авалона, доступ к каналам ограничен!');
-      }
+  }
+  if (reaction.message.id == "808773269196374066" ) {
+    if (reaction.emoji.name == "✅") {
+      user.send("Вы согласились с правилами гильдии, вам выдан доступ к каналам гильдии!");
+      ussr.roles.add(role);
     }
+  }
 });
-client.on("messageReactionRemove", (reaction, user) => {
-    if(user == client.user) return;
-    let cont = reaction.message.content;
-    const ussr = reaction.message.guild.members.cache.get(user.id);
-    var role = reaction.message.guild.roles.cache.find(role => role.id === "806340728186732604");
-    var role2 = reaction.message.guild.roles.cache.find(role => role.id === "806336844412878908");
-    if(cont.includes('для получения полноценного доступа к каналам авалона')) {
-      if(reaction.emoji.name === "✅"){
-        ussr.roles.remove(role);
-        ussr.send('Вы отказались от правил авалона, доступ к каналам ограничен!');
-      }
+
+
+bot.on('messageReactionRemove', (reaction, user) => {
+  if(user == bot.user) return;
+  const ussr = reaction.message.guild.members.cache.get(user.id);
+  var role = reaction.message.guild.roles.cache.find(role => role.id === "806340728186732604");
+  var role2 = reaction.message.guild.roles.cache.find(role => role.id === "806336844412878908");
+  if (reaction.message.id == "808773205652144158" ) {
+    if (reaction.emoji.name == "✅") {
+      user.send("Вы отказались от правил авалона, доступ к каналам ограничен!");
+      ussr.roles.remove(role2);
     }
-    if(cont.includes('для получения полноценного доступа к каналам сервера гильдии')) {
-        if(reaction.emoji.name === "✅"){
-            ussr.roles.remove(role2);
-            ussr.send('Вы отказались от правил гильдии, доступ к каналам гильдии ограничен!');
-        }
+  }
+  if (reaction.message.id == "808773269196374066" ) {
+    if (reaction.emoji.name == "✅") {
+      user.send("Вы отказались от правил гильдии, доступ к каналам гильдии ограничен!");
+      ussr.roles.remove(role);
     }
+  }
 });
-client.login(process.env.token);
+bot.login(process.env.token);
