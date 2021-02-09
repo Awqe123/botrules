@@ -36,13 +36,13 @@ bot.on('messageReactionAdd', (reaction, user) => {
   if (reaction.message.id == "808773205652144158") {
       if (reaction.emoji.name == "✅") {
         user.send('Вы согласились с правилами авалона, вам выдан доступ к каналам!');
-        ussr.roles.add(role2);
+        ussr.roles.add(role);
       }
   }
   if (reaction.message.id == "808773269196374066" ) {
     if (reaction.emoji.name == "✅") {
       user.send("Вы согласились с правилами гильдии, вам выдан доступ к каналам гильдии!");
-      ussr.roles.add(role);
+      ussr.roles.add(role2);
     }
   }
 });
@@ -56,13 +56,13 @@ bot.on('messageReactionRemove', (reaction, user) => {
   if (reaction.message.id == "808773205652144158" ) {
     if (reaction.emoji.name == "✅") {
       user.send("Вы отказались от правил авалона, доступ к каналам ограничен!");
-      ussr.roles.remove(role2);
+      ussr.roles.remove(role);
     }
   }
   if (reaction.message.id == "808773269196374066" ) {
     if (reaction.emoji.name == "✅") {
       user.send("Вы отказались от правил гильдии, доступ к каналам гильдии ограничен!");
-      ussr.roles.remove(role);
+      ussr.roles.remove(role2);
     }
   }
 });
